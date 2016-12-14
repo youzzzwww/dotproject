@@ -1,16 +1,22 @@
 <?php
 require_once '../base.php';
+require_once DP_BASE_DIR . '/includes/config.php';
+require_once (DP_BASE_DIR . '/includes/main_functions.php');
+require_once (DP_BASE_DIR . '/includes/db_connect.php');
 require_once (DP_BASE_DIR . '/classes/permissions.class.php');
+
 
         
 class User
 {
     private $uid;     // user id
     private $fields;  // other record fields
+	private $pacl;
 
     // initialize a User object
     public function __construct()
     {
+		$this->pacl = new dPacl();
         $this->uid = null;
         $this->fields = array('username' => '',
                               'password' => '',
@@ -170,12 +176,25 @@ class User
 
     
 
-    // add the user's role information to the basic table gacl_aro
-    public function addLogin()
+    // add the user's role information
+    public function addLogin($role_id = 19)
     {
-		$pacl = new dPacl();
-        return $pacl->addLogin($this->uid, $this->username);
+        $this->pacl->addLogin($this->uid, $this->username);
+		$this->pacl->insertUserRole($role_id, $this->uid);
     }
+
+	public function checkHasRole()
+	{
+		$rs = $this->pacl->getUserRoles($this->uid);
+		if (empty($rs))
+			return false;
+		else 
+			return true;
+	}
+	public function getRoleByName($name, $value)
+	{
+		return $this->pacl->get_group_id($name, $value);
+	}
     
 }
 ?>

@@ -27,43 +27,23 @@ else if (!$user = User::getById($_GET['uid']))
 // make sure the account is not active
 else
 {
-    //add the user to table gacl_aro
-    $user->addLogin();
     // activate the account
-    $userid = $_GET['uid'];
-    if($_GET['roleid']=='')
-        $role = 19;
-    //else $role = $_GET['roleid'];
-    
-    // test to see if object & group exist and if object is already a member
-    $query  = '
-		SELECT		o.id AS id,g.id AS group_id,gm.group_id AS member
-		FROM		'. 'gacl_aro' .' o
-		LEFT JOIN	'. 'gacl_aro_groups' .' g ON g.id='. $role .'
-		LEFT JOIN	'. 'gacl_groups_aro_map' .' gm ON (gm.'. 'aro_id=o.id AND gm.group_id=g.id)
-		WHERE		(o.section_value='. '"user"' .' AND o.value='. $userid .')';
-	$row = array();
-    $rs = db_loadObject($query, $row);
-    //Group_ID == Member
-    if ($row[1] == $row[2])
-    {
-        $GLOBALS['TEMPLATE']['content'] = '<p><strong>User has been activated ' .
-        '.</strong></p> ';
-        
-    }
-    else
-    {
-        $object_id = $row[0];
-        $query = 'INSERT INTO '. 'gacl_groups_aro_map' .' (group_id,'. 'aro_id) VALUES ('. $role .','. $object_id .')';
-        db_exec($query);
+    if($_GET['roleid']=='') {
+        $role = $user->getRoleByName('Guest', 'guest');
+	}
 
+	if ($user->checkHasRole()) {
+        $GLOBALS['TEMPLATE']['content'] = '<p><strong>User already has been activated ' .
+			'.</strong></p> ';
+	} else {
+		//add the user to table gacl_aro and gacl_groups_aro_map
+		$user->addLogin($role);
         $GLOBALS['TEMPLATE']['content'] = '<p><strong>Dear user ' .$user->username.
-        '.</strong></p> <p>Congratulation, activate success.</p>';
+			'.</strong></p> <p>Congratulation, activate success.</p>';
         $GLOBALS['TEMPLATE']['content'].='<a href="http://'.
-        $_SERVER['HTTP_HOST'].'/dotProject/index.php">'.
-                'Click here to login page';
-    }  
-    mysql_free_result($rs);    
+			$_SERVER['HTTP_HOST'].'/dotproject/index.php">'.
+			'Click here to login page.';
+	}
 }
 
 // display the page

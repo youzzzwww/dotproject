@@ -28,6 +28,7 @@ if (!(defined('ADODB_DIR'))) {
 //Include the PHPGACL library
 require_once DP_BASE_DIR . '/lib/phpgacl/gacl.class.php';
 require_once DP_BASE_DIR . '/lib/phpgacl/gacl_api.class.php';
+require_once DP_BASE_DIR . '/classes/query.class.php';
 //Include the db_connections 
 
 //Now extend the class

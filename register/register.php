@@ -149,8 +149,8 @@ else
             $message = '<html>'.
                 '<p>Thanks for your register！</p>'.
                 '<p>Before your login, please ensure your email by click <a href="http://'.
-                 $_SERVER['HTTP_HOST'].'/dotProject/register/verify.php?uid='.$uid.'&roleid='.' '.'">'.
-                'http://'.$_SERVER['HTTP_HOST'].'/dotProject/register/verify.php?uid='.$uid.'&roleid='.' '.'</a></p></html>';
+                 $_SERVER['HTTP_HOST'].'/dotproject/register/verify.php?uid='.$uid.'&roleid='.' '.'">'.
+                'http://'.$_SERVER['HTTP_HOST'].'/dotproject/register/verify.php?uid='.$uid.'&roleid='.' '.'</a></p></html>';
             $m=new Mail();
             $m->From( '' );
 			$m->To( $u->emailAddr );
